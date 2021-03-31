@@ -1,0 +1,87 @@
+#include <Servo.h> //another library and some other code will need to be added for the IR remote
+
+Servo base_servo;  // create servo object to control a servo
+int base_pos = 0;    // variable to store the servo position
+
+Servo holder_servo;  // create servo object to control a servo
+int holder_pos = 0;    // variable to store the servo position
+
+Servo flip_servo;  // create servo object to control a servo
+int flip_pos = 0;    // variable to store the servo position
+
+// twelve servo objects can be created on most boards
+
+boolean spin = false;
+char number = 0; //variable to store input from serial monitor
+
+#define baseLeft              xxxxxxxxxxx //PUT HEX CODE FOR EACH BUTTON WHERE THE X's ARE, we will then change the switch to use these definitions instead of numbers
+#define baseRight             xxxxxxxxxxx
+#define armUp                 xxxxxxxxxxx
+#define armDown               xxxxxxxxxxx
+#define swingFlipper          xxxxxxxxxxx
+
+void setup() {
+  Serial.begin(9600);
+  base_servo.attach(2);
+  holder_servo.attach(3);
+  flip_servo.attach(4);
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    number = Serial.read();
+
+    if ((number >= '0') && (number <= '5')) {
+      Serial.print("Number received: ");
+      Serial.println(number);
+
+      switch (number) {
+
+        //Spin Servo One
+        case '1':
+          Serial.println("case 1");
+          if(spin = false) {        //this is incomplete; i'm trying to have it so when you spin it one way, you can't spin it again in that             
+            base_pos += 90;         //same direction until you spin it the opposite way, I think I know how imma do that but i'll do it tmrw morning
+            base_servo.write(base_pos);
+            spin = true;
+          }
+          break;
+
+        //Spin Servo One
+        case '2':
+          Serial.println("Case 2");
+          if(spin = true) {
+            base_pos -= 90;
+            base_servo.write(base_pos);
+            spin = false;
+          }
+          break;
+
+        //Spin Servo Two
+        case '3':
+          Serial.println("case 3");
+          base_pos += 90;
+          base_servo.write(holder_pos);                      
+          break;
+
+        //Spin Servo Two
+        case '4':
+          Serial.println("case 4");
+          base_pos -= 90;
+          base_servo.write(holder_pos);                      
+          break;
+
+        //Flip Cube
+        case '5':
+          Serial.println("case 5");
+          flip_pos -= 359;
+          flip_servo.write(flip_pos);                      
+          break;
+
+        default:
+          Serial.println("miss");     //for debugging
+          break;
+      }
+    }
+  }
+}
